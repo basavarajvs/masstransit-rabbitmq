@@ -4,6 +4,11 @@ using Consumer;
 using Microsoft.Extensions.Configuration;
 
 await Host.CreateDefaultBuilder(args)
+    .UseContentRoot(AppDomain.CurrentDomain.BaseDirectory) // Set content root to the executable's directory
+    .ConfigureAppConfiguration((hostingContext, config) =>
+    {
+        config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+    })
     .ConfigureServices((hostContext, services) =>
     {
         services.AddMassTransit(x =>
