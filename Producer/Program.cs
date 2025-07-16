@@ -29,15 +29,18 @@ await Host.CreateDefaultBuilder(args)
 class Worker : BackgroundService
 {
     private readonly IBus _bus;
+    private readonly IConfiguration _configuration;
 
-    public Worker(IBus bus)
+    public Worker(IBus bus, IConfiguration configuration)
     {
         _bus = bus;
+        _configuration = configuration;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var endpoint = await _bus.GetSendEndpoint(new Uri("queue:image-processing"));
+        var queueName = _configuration.GetSection("RabbitMq")["QueueName"];
+        var endpoint = await _bus.GetSendEndpoint(new Uri($"queue:{queueName}"));
         await endpoint.Send(new ImageToProcess { ImagePath = "/path/to/image.jpg" }, stoppingToken);
 
         Console.WriteLine("Sent image processing request");

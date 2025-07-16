@@ -16,14 +16,15 @@ The project simulates a common web application scenario: a user uploads an image
 
 ## Configuration
 
-The RabbitMQ connection settings are stored in `appsettings.json` in both the `Producer` and `Consumer` projects. You can modify these files to match your RabbitMQ instance.
+The RabbitMQ connection settings and queue name are stored in `appsettings.json` in both the `Producer` and `Consumer` projects. You can modify these files to match your RabbitMQ instance and desired queue name.
 
 ```json
 {
   "RabbitMq": {
     "Host": "localhost",
     "Username": "guest",
-    "Password": "guest"
+    "Password": "guest",
+    "QueueName": "image-processing"
   }
 }
 ```
