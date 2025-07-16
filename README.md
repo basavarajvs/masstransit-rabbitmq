@@ -14,6 +14,20 @@ The project simulates a common web application scenario: a user uploads an image
 - .NET 8 SDK
 - Docker (or a running instance of RabbitMQ)
 
+## Configuration
+
+The RabbitMQ connection settings are stored in `appsettings.json` in both the `Producer` and `Consumer` projects. You can modify these files to match your RabbitMQ instance.
+
+```json
+{
+  "RabbitMq": {
+    "Host": "localhost",
+    "Username": "guest",
+    "Password": "guest"
+  }
+}
+```
+
 ## How to Run
 
 1.  **Start RabbitMQ:**

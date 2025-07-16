@@ -1,14 +1,23 @@
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MassTransit;
 using Contracts;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 await Host.CreateDefaultBuilder(args)
-    .ConfigureServices(services =>
+    .ConfigureServices((hostContext, services) =>
     {
         services.AddMassTransit(x =>
         {
-            x.UsingRabbitMq();
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                var rabbitMqConfig = hostContext.Configuration.GetSection("RabbitMq");
+                cfg.Host(rabbitMqConfig["Host"], "/", h =>
+                {
+                    h.Username(rabbitMqConfig["Username"]);
+                    h.Password(rabbitMqConfig["Password"]);
+                });
+            });
         });
 
         services.AddHostedService<Worker>();

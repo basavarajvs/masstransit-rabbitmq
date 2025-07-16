@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Hosting;
 using MassTransit;
 using Consumer;
+using Microsoft.Extensions.Configuration;
 
 await Host.CreateDefaultBuilder(args)
-    .ConfigureServices(services =>
+    .ConfigureServices((hostContext, services) =>
     {
         services.AddMassTransit(x =>
         {
@@ -11,6 +12,13 @@ await Host.CreateDefaultBuilder(args)
 
             x.UsingRabbitMq((context, cfg) =>
             {
+                var rabbitMqConfig = hostContext.Configuration.GetSection("RabbitMq");
+                cfg.Host(rabbitMqConfig["Host"], "/", h =>
+                {
+                    h.Username(rabbitMqConfig["Username"]);
+                    h.Password(rabbitMqConfig["Password"]);
+                });
+
                 cfg.ReceiveEndpoint("image-processing", e =>
                 {
                     e.ConfigureConsumer<ImageConsumer>(context);
